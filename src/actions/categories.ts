@@ -1,0 +1,1 @@
+const getCategoriesWithProducts = async (): Promise<CategoriesWithProductResponse> => {};

@@ -1,3 +1,6 @@
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { RenderMounted } from "@/components/render-mounted";
 import { ADMIN } from "@/constants/constants";
 import { createClient } from "@/supabase/server";
 import { redirect } from "next/navigation";
@@ -29,5 +32,14 @@ export default async function AdminLayout({
       }
     }
   
-    return <>{children}</>;
+    return (
+      <RenderMounted>
+        <Header />
+        <main className="min-h-[calc(100svh-120px)] py-3">
+          {children}
+        </main>
+        <Footer />
+      </RenderMounted>
+    );
+
 }
