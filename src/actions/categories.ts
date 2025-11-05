@@ -1,9 +1,9 @@
 'use server';
 
-import slugify from 'slugify';
-
 import { CategoriesWithProductsResponse } from '@/app/admin/categories/categories.types';
 import { createClient } from '@/supabase/server';
+
+const supabase = createClient();
 
 export const getCategoriesWithProducts =
   async (): Promise<CategoriesWithProductsResponse> => {
