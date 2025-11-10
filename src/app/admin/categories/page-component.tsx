@@ -4,8 +4,9 @@ import { FC, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PlusCircle } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
 import { v4 as uuid } from 'uuid';
+
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -31,20 +32,24 @@ import {
 import { CategoryTableRow } from '@/components/category';
 import {
   createCategorySchema,
-  CreateCategorySchema,
+  type CreateCategorySchema,
 } from '@/app/admin/categories/create-category-schema';
-
-import { CategoriesWithProductsResponse } from '@/app/admin/categories/categories.types';
-import { CategoryForm } from './category-form';
-
-
+import type { CategoriesWithProductsResponse } from '@/app/admin/categories/categories.types';
+import { CategoryForm } from '@/app/admin/categories/category-form';
+import {
+  createCategory,
+  deleteCategory,
+  imageUploadHandler,
+  updateCategory,
+} from '@/actions/categories';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 type Props = {
   categories: CategoriesWithProductsResponse;
 };
 
-const CategoriesPageComponent: FC<Props> = ({ categories }) => 
-  {
+const CategoriesPageComponent: FC<Props> = ({ categories }) => {
   const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
     useState(false);
   const [currentCategory, setCurrentCategory] =
@@ -57,17 +62,14 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) =>
       image: undefined,
     },
   });
+
+  const router = useRouter();
+
   const submitCategoryHandler: SubmitHandler<
     CreateCategorySchema
   > = async data => {
-    const uniqueId = uuid();
-    const fileName = `category/category-${uniqueId}`;
-    const file = new File([data.image[0]], fileName);
-    const formData = new FormData();
-    formData.append('file', file);
-
-    {/*
-    const { image, name, intent = 'create' } = data;
+   
+    const intent = currentCategory ? 'update' : 'create';
 
     const handleImageUpload = async () => {
       const uniqueId = uuid();
@@ -93,14 +95,14 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) =>
         break;
       }
       case 'update': {
-        if (image && currentCategory?.slug) {
+        if (data.image && currentCategory?.slug) {
           const imageUrl = await handleImageUpload();
 
           if (imageUrl) {
             await updateCategory({
               imageUrl,
               name,
-              slug: currentCategory.slug,
+              slug: currentCategory?.slug,
               intent: 'update',
             });
             form.reset();
@@ -120,8 +122,7 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) =>
     await deleteCategory(id);
     router.refresh();
     toast.success('Category deleted successfully');
-  */}
-  console.log(data)};
+  };
 
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
@@ -189,7 +190,7 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) =>
                   category={category}
                   setCurrentCategory={setCurrentCategory}
                   setIsCreateCategoryModalOpen={setIsCreateCategoryModalOpen}
-                  //deleteCategoryHandler={deleteCategoryHandler}
+                  deleteCategoryHandler={deleteCategoryHandler}
                 />
               ))}
             </TableBody>
@@ -198,5 +199,6 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) =>
       </Card>
     </main>
   );
-}
+};
+
 export default CategoriesPageComponent;
