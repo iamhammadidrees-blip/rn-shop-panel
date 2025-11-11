@@ -39,7 +39,7 @@ export const CategoryTableRow = ({
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const handleEditClick = (category: CreateCategorySchema) => {
+  const handleEditClick = (category: CategoryWithProducts) => {
     setCurrentCategory({
       name: category.name,
       // @ts-ignore
@@ -61,7 +61,7 @@ export const CategoryTableRow = ({
             alt='Product image'
             className='aspect-square rounded-md object-cover'
             height='64'
-            src={category.imageUrl}
+            src={category.imageURL}
             width='64'
           />
         </TableCell>
