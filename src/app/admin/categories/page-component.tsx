@@ -53,7 +53,7 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) => {
   const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
     useState(false);
   const [currentCategory, setCurrentCategory] =
-    useState<CreateCategorySchema | null>(null);
+    useState<(CreateCategorySchema & { slug?: string }) | null>(null);
 
   const form = useForm<CreateCategorySchema>({
     resolver: zodResolver(createCategorySchema),
@@ -86,7 +86,7 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) => {
         const imageUrl = await handleImageUpload();
 
         if (imageUrl) {
-          await createCategory({ imageUrl, name });
+          await createCategory({ imageUrl, name: data.name });
           form.reset();
           router.refresh();
           setIsCreateCategoryModalOpen(false);
@@ -101,7 +101,7 @@ const CategoriesPageComponent: FC<Props> = ({ categories }) => {
           if (imageUrl) {
             await updateCategory({
               imageUrl,
-              name,
+              name: data.name,
               slug: currentCategory?.slug,
               intent: 'update',
             });
