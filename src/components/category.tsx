@@ -32,10 +32,14 @@ export const CategoryTableRow = ({
   category,
   setCurrentCategory,
   setIsCreateCategoryModalOpen,
+  deleteCategoryHandler,
 }: {
   category: CategoryWithProducts;
-  setCurrentCategory: (category: CreateCategorySchema | null) => void;
+  setCurrentCategory: (
+    category: (CreateCategorySchema & { slug?: string; id?: number }) | null
+  ) => void;
   setIsCreateCategoryModalOpen: (isOpen: boolean) => void;
+  deleteCategoryHandler: (id: number) => Promise<void>;
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -44,12 +48,14 @@ export const CategoryTableRow = ({
       name: category.name,
       // @ts-ignore
       image: new File([], ''),
+      slug: category.slug,
+      id: category.id,
     });
     setIsCreateCategoryModalOpen(true);
   };
 
-  const handleDelete = () => {
-    console.log(`Deleting category with ID: ${category.id}`);
+  const handleDelete = async () => {
+    await deleteCategoryHandler(category.id);
     setIsDeleteDialogOpen(false);
   };
 
@@ -116,7 +122,7 @@ export const CategoryTableRow = ({
         </TableCell>
         <TableCell>
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button size='icon' variant='ghost'>
                 <MoreHorizontal className='h-4 w-4' />
                 <span className='sr-only'>Open menu</span>

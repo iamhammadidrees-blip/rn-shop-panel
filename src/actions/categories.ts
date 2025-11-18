@@ -81,12 +81,14 @@ export const updateCategory = async ({
   imageUrl,
   name,
   slug,
+  id,
 }: UpdateCategorySchema) => {
+  if (!id) throw new Error('Category id is required for update');
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('category')
     .update({ name, imageURL: imageUrl })
-    .match({ slug });
+    .match({ id });
 
   if (error) throw new Error(`Error updating category: ${error.message}`);
 
